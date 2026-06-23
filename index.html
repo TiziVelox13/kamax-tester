@@ -1,334 +1,1087 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Campo Controlado · KAMAX AL125 · Agente Maxi</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KAMAX · MAXI — Laboratorio de pruebas</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Saira+Condensed:wght@400;600;700;900&family=Saira:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
 <style>
-  /* ══════════════════════════════════════════════
-     VARIABLES — Kamax negro/rojo
-     ══════════════════════════════════════════════ */
-  :root {
-    color-scheme: dark;
-    --bg:        #0a0506;
-    --line:      rgba(255,255,255,.10);
-    --text:      #f5eff0;
-    --muted:     #9b8a8d;
-    --accent:    #e8302a;      /* rojo Kamax */
-    --accent-dk: #b3201b;
-    --warn:      #ffd166;
-    --ok:        #4ade80;
-    --msg-user-bg:    #e8302a;
-    --msg-user-color: #fff;
-    --msg-bot-bg:     rgba(255,255,255,.07);
-    --msg-bot-color:  #f5eff0;
-  }
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; }
-  body {
-    background:
-      radial-gradient(ellipse at 12% 8%,  rgba(232,48,42,.14), transparent 38%),
-      radial-gradient(ellipse at 88% 95%, rgba(232,48,42,.07), transparent 35%),
-      linear-gradient(165deg, #0c0607 0%, #120709 55%, #0a0506 100%);
+
+  :root {
+    --bg:        #0a0b0d;
+    --bg2:       #111317;
+    --bg3:       #181b20;
+    --bg4:       #1e2228;
+    --red:       #EC0606;
+    --red-dim:   #8a0303;
+    --blue:      #0E3580;
+    --blue-lt:   #1a4db5;
+    --blue-dim:  #0a2457;
+    --text:      #e8eaf0;
+    --text-dim:  #7a8090;
+    --green:     #1ec96a;
+    --green-dim: #0e6e3a;
+    --amber:     #f0a020;
+    --amber-dim: #7a5010;
+    --border:    #252932;
+    --mono:      'JetBrains Mono', monospace;
+    --sans:      'Saira', sans-serif;
+    --cond:      'Saira Condensed', sans-serif;
+  }
+
+  html, body {
+    background: var(--bg);
     color: var(--text);
-    font-family: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
+    font-family: var(--sans);
     font-size: 14px;
-    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: var(--bg2); }
+  ::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 3px; }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(90deg, var(--bg2) 0%, #130a0a 60%, #0a0d1a 100%);
+    border-bottom: 2px solid var(--red);
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .logo-k {
+    font-family: var(--cond);
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--red);
+    letter-spacing: -1px;
+    line-height: 1;
+    text-shadow: 0 0 18px rgba(236,6,6,0.5);
+  }
+  .header-title {
+    font-family: var(--cond);
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--text);
+    line-height: 1.1;
+  }
+  .header-title span { color: var(--text-dim); font-weight: 400; }
+  .badge-test {
+    background: var(--red);
+    color: #fff;
+    font-family: var(--cond);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    text-transform: uppercase;
+    box-shadow: 0 0 10px rgba(236,6,6,0.4);
+  }
+  .header-right { display: flex; align-items: center; gap: 12px; }
+  .session-id {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    padding: 4px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+  }
+  .btn-reset {
+    background: transparent;
+    border: 1.5px solid var(--red);
+    color: var(--red);
+    font-family: var(--cond);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 6px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.15s;
+    text-transform: uppercase;
+  }
+  .btn-reset:hover {
+    background: var(--red);
+    color: #fff;
+    box-shadow: 0 0 12px rgba(236,6,6,0.4);
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .main-layout {
+    display: flex;
+    gap: 0;
+    height: calc(100vh - 61px);
     overflow: hidden;
   }
-  .app {
-    height: 100vh;
-    padding: 14px;
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) 300px;
-    grid-template-rows: auto minmax(0, 1fr);
-    gap: 14px;
-    max-width: 1200px;
-    margin: 0 auto;
+
+  /* ── LEFT: CHAT ── */
+  .chat-panel {
+    width: 42%;
+    min-width: 300px;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid var(--border);
+    background: var(--bg2);
   }
-  /* ── Topbar ── */
-  .topbar {
-    grid-column: 1 / -1;
-    display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
-    border: 1px solid var(--line);
-    background: linear-gradient(160deg, rgba(30,12,14,.92), rgba(14,6,8,.97));
-    border-radius: 18px;
-    padding: 12px 18px;
+  .chat-header {
+    padding: 10px 14px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
-  .brand { display: flex; align-items: baseline; gap: 10px; }
-  .brand .x {
-    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px;
-    color: var(--accent); letter-spacing: -.5px;
+  .avatar-maxi {
+    width: 34px; height: 34px;
+    background: linear-gradient(135deg, var(--blue) 0%, var(--red) 100%);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--cond); font-size: 14px; font-weight: 900; color: #fff;
   }
-  .brand .model { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; }
-  .env-pill {
-    font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px;
-    color: var(--warn); border: 1px solid rgba(255,209,102,.35);
-    padding: 3px 10px; border-radius: 999px;
+  .chat-agent-name { font-weight: 600; font-size: 14px; }
+  .chat-agent-sub { font-size: 11px; color: var(--text-dim); }
+  .dot-online {
+    width: 8px; height: 8px;
+    background: var(--green);
+    border-radius: 50%;
+    box-shadow: 0 0 6px var(--green);
+    margin-left: auto;
   }
-  .session {
-    margin-left: auto; display: flex; align-items: center; gap: 10px;
-    font-family: 'JetBrains Mono', monospace; font-size: 10.5px; color: var(--muted);
+
+  .chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
   }
-  .session b { color: #ff9b97; font-weight: 500; }
-  .btn-reset {
-    border: 1px solid var(--accent); background: transparent; color: var(--accent);
-    font: 700 12px 'DM Sans', sans-serif; padding: 7px 14px; border-radius: 10px; cursor: pointer;
-    transition: .15s;
+
+  .msg { display: flex; flex-direction: column; max-width: 82%; }
+  .msg.lead { align-self: flex-end; align-items: flex-end; }
+  .msg.maxi { align-self: flex-start; align-items: flex-start; }
+
+  .bubble {
+    padding: 9px 13px;
+    border-radius: 12px;
+    line-height: 1.5;
+    font-size: 13.5px;
+    word-break: break-word;
+    position: relative;
   }
-  .btn-reset:hover { background: var(--accent); color: #fff; }
-  /* ── Chat ── */
-  .chat-col {
-    display: flex; flex-direction: column; min-height: 0;
-    border: 1px solid var(--line);
-    background: linear-gradient(160deg, rgba(26,11,13,.93), rgba(12,5,7,.97));
-    border-radius: 20px; overflow: hidden;
+  .msg.lead .bubble {
+    background: var(--blue);
+    color: #fff;
+    border-bottom-right-radius: 3px;
   }
-  .messages {
-    flex: 1; overflow-y: auto; padding: 20px;
-    display: flex; flex-direction: column; gap: 10px;
-    scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.08) transparent;
+  .msg.maxi .bubble {
+    background: var(--bg4);
+    color: var(--text);
+    border-bottom-left-radius: 3px;
+    border: 1px solid var(--border);
   }
-  .empty {
-    margin: auto; text-align: center; color: var(--muted); max-width: 380px;
+  .bubble-time {
+    font-size: 10px;
+    color: var(--text-dim);
+    margin-top: 3px;
+    padding: 0 3px;
   }
-  .empty h2 { font-family: 'Syne', sans-serif; font-size: 17px; color: var(--text); margin-bottom: 6px; }
-  .msg {
-    max-width: 78%; padding: 10px 14px; border-radius: 16px;
-    white-space: pre-wrap; word-wrap: break-word; animation: pop .18s ease-out;
+
+  /* Typing indicator */
+  .typing-indicator {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 12px;
+    font-size: 12px;
+    color: var(--text-dim);
+    font-style: italic;
   }
-  @keyframes pop { from { opacity: 0; transform: translateY(5px); } }
-  .msg.user { align-self: flex-end; background: var(--msg-user-bg); color: var(--msg-user-color); border-bottom-right-radius: 5px; }
-  .msg.bot  { align-self: flex-start; background: var(--msg-bot-bg); color: var(--msg-bot-color); border-bottom-left-radius: 5px; }
-  .msg.error { align-self: center; background: rgba(232,48,42,.12); border: 1px solid rgba(232,48,42,.4); color: #ff9b97; font-size: 12.5px; }
-  .handoff-flag {
-    align-self: flex-start; display: flex; flex-direction: column; gap: 2px;
-    border: 1px dashed var(--warn); color: var(--warn);
-    border-radius: 12px; padding: 8px 12px; font-size: 11.5px; font-weight: 700;
-    background: rgba(255,209,102,.06);
+  .typing-indicator.active { display: flex; }
+  .typing-dots { display: flex; gap: 4px; }
+  .typing-dots span {
+    width: 6px; height: 6px;
+    background: var(--text-dim);
+    border-radius: 50%;
+    animation: bounce 1.2s infinite;
   }
-  .handoff-flag small { font-family: 'JetBrains Mono', monospace; font-weight: 500; font-size: 10px; opacity: .85; }
-  .typing { align-self: flex-start; color: var(--muted); font-size: 12px; padding: 6px 12px; }
-  .typing::after { content: '···'; animation: blink 1s infinite; font-weight: 700; letter-spacing: 2px; }
-  @keyframes blink { 50% { opacity: .25; } }
-  /* ── Composer ── */
-  .composer {
-    display: flex; gap: 10px; padding: 14px; border-top: 1px solid var(--line);
-    background: rgba(0,0,0,.25);
+  .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes bounce {
+    0%, 60%, 100% { transform: translateY(0); }
+    30% { transform: translateY(-5px); }
   }
-  .composer textarea {
-    flex: 1; resize: none; border: 1px solid var(--line); background: rgba(255,255,255,.05);
-    color: var(--text); border-radius: 12px; padding: 10px 13px;
-    font: 14px 'DM Sans', sans-serif; line-height: 1.45; max-height: 120px; outline: none;
+
+  /* Chips */
+  .chips-area {
+    padding: 8px 10px 4px;
+    border-top: 1px solid var(--border);
+    background: var(--bg3);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
   }
-  .composer textarea:focus { border-color: rgba(232,48,42,.6); }
+  .chip {
+    background: var(--bg4);
+    border: 1px solid var(--border);
+    color: var(--text);
+    font-size: 11px;
+    padding: 4px 9px;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.12s;
+    white-space: nowrap;
+    user-select: none;
+  }
+  .chip:hover {
+    border-color: var(--blue-lt);
+    background: var(--blue-dim);
+    color: #fff;
+  }
+  .chip.special {
+    border-color: var(--amber-dim);
+    color: var(--amber);
+  }
+  .chip.special:hover {
+    background: var(--amber-dim);
+    color: #fff;
+  }
+
+  /* Input row */
+  .input-row {
+    padding: 8px 10px;
+    background: var(--bg3);
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 8px;
+    align-items: flex-end;
+  }
+  .msg-input {
+    flex: 1;
+    background: var(--bg4);
+    border: 1px solid var(--border);
+    color: var(--text);
+    border-radius: 20px;
+    padding: 9px 14px;
+    font-family: var(--sans);
+    font-size: 13px;
+    resize: none;
+    min-height: 38px;
+    max-height: 100px;
+    overflow-y: auto;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+  .msg-input:focus { border-color: var(--blue-lt); }
+  .msg-input::placeholder { color: var(--text-dim); }
   .btn-send {
-    border: 0; background: var(--accent); color: #fff; font: 700 13.5px 'DM Sans', sans-serif;
-    padding: 0 20px; border-radius: 12px; cursor: pointer; transition: .15s;
+    background: var(--red);
+    border: none;
+    color: #fff;
+    width: 38px; height: 38px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+    flex-shrink: 0;
   }
-  .btn-send:hover { background: var(--accent-dk); }
-  .btn-send:disabled { opacity: .45; cursor: default; }
-  /* ── Casos ── */
-  .cases-col {
-    border: 1px solid var(--line);
-    background: linear-gradient(160deg, rgba(26,11,13,.93), rgba(12,5,7,.97));
-    border-radius: 20px; overflow-y: auto; padding: 16px;
-    scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.08) transparent;
+  .btn-send:hover { background: #c00; box-shadow: 0 0 10px rgba(236,6,6,0.4); }
+  .btn-send:disabled { background: var(--bg4); cursor: not-allowed; }
+  .btn-send svg { width: 16px; height: 16px; }
+
+  /* ── RIGHT: PANELS ── */
+  .panels-panel {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background: var(--bg);
   }
-  .cases-col h3 {
-    font-family: 'Syne', sans-serif; font-size: 13px; text-transform: uppercase;
-    letter-spacing: 1.2px; color: var(--muted); margin-bottom: 12px;
+
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
   }
-  .case {
-    border: 1px solid var(--line); border-radius: 12px; padding: 10px 12px;
-    margin-bottom: 9px; cursor: pointer; transition: .15s; font-size: 12.5px;
+  .card-header {
+    background: var(--bg3);
+    padding: 8px 14px;
+    font-family: var(--cond);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 8px;
   }
-  .case:hover { border-color: rgba(232,48,42,.55); background: rgba(232,48,42,.06); }
-  .case b { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: .7px; color: #ff9b97; margin-bottom: 3px; }
-  .case span { color: var(--muted); }
-  .rules {
-    margin-top: 16px; border-top: 1px solid var(--line); padding-top: 12px;
-    font-size: 11px; color: var(--muted); line-height: 1.6;
+  .card-header .icon { font-size: 15px; }
+  .card-body { padding: 12px 14px; }
+
+  /* Panel 1: Semaforo */
+  .semaforo-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .semaforo-col h4 {
+    font-family: var(--cond);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
   }
-  .rules b { color: var(--warn); }
-  @media (max-width: 880px) {
-    .app { grid-template-columns: 1fr; grid-template-rows: auto minmax(0,1fr) auto; }
-    .cases-col { max-height: 200px; }
-    body { overflow: auto; }
+  .semaforo-col.ok h4 { color: var(--green); }
+  .semaforo-col.pend h4 { color: var(--amber); }
+  .semaforo-item {
+    font-size: 11.5px;
+    padding: 3px 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    border-bottom: 1px solid var(--border);
+  }
+  .semaforo-item:last-child { border-bottom: none; }
+  .dot-ok { color: var(--green); font-size: 10px; }
+  .dot-pend { color: var(--amber); font-size: 10px; }
+
+  .lead-data { margin-top: 10px; border-top: 1px solid var(--border); padding-top: 10px; }
+  .lead-data h4 {
+    font-family: var(--cond);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 6px;
+  }
+  .lead-data-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+  .lead-chip {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: var(--bg4);
+    border: 1px solid var(--border);
+    color: var(--text-dim);
+  }
+  .lead-chip.filled {
+    background: var(--blue-dim);
+    border-color: var(--blue-lt);
+    color: #a0c0ff;
+  }
+
+  /* Panel 2: Buffer */
+  .buffer-grid { display: flex; flex-direction: column; gap: 6px; }
+  .buffer-row {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 6px;
+    align-items: start;
+  }
+  .buffer-key {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--text-dim);
+    padding-top: 1px;
+  }
+  .buffer-val {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--text);
+    word-break: break-all;
+    background: var(--bg3);
+    padding: 3px 7px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+  }
+  .buffer-val.highlight { color: var(--blue-lt); border-color: var(--blue-dim); }
+
+  /* Panel 3: Handoff */
+  .handoff-badge {
+    display: inline-block;
+    font-family: var(--cond);
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: 1px;
+    padding: 8px 18px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+  }
+  .handoff-badge.active {
+    background: var(--red);
+    color: #fff;
+    box-shadow: 0 0 20px rgba(236,6,6,0.5);
+    animation: pulse 2s infinite;
+  }
+  .handoff-badge.inactive {
+    background: var(--bg4);
+    color: var(--text-dim);
+    border: 1px solid var(--border);
+  }
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 10px rgba(236,6,6,0.3); }
+    50% { box-shadow: 0 0 25px rgba(236,6,6,0.7); }
+  }
+  .handoff-motivo {
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--amber);
+    background: var(--bg3);
+    padding: 6px 10px;
+    border-radius: 4px;
+    border-left: 3px solid var(--amber);
+    word-break: break-word;
+  }
+
+  /* Panel 4: Alerta */
+  .wa-bubble {
+    background: #1a3a1a;
+    border: 1px solid #2a5a2a;
+    border-radius: 8px;
+    padding: 10px 13px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #a8e6a8;
+    position: relative;
+  }
+  .wa-bubble::before {
+    content: "WhatsApp → Alejandro";
+    display: block;
+    font-family: var(--cond);
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: var(--green);
+    margin-bottom: 5px;
+    text-transform: uppercase;
+  }
+  .no-alerta { color: var(--text-dim); font-style: italic; font-size: 12.5px; }
+
+  /* Panel 5: CRM */
+  .crm-table { width: 100%; border-collapse: collapse; font-size: 11.5px; }
+  .crm-table td {
+    padding: 4px 8px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .crm-table td:first-child {
+    font-family: var(--mono);
+    font-size: 10.5px;
+    color: var(--text-dim);
+    width: 40%;
+    white-space: nowrap;
+  }
+  .crm-table td:last-child {
+    font-family: var(--mono);
+    font-size: 11px;
+    word-break: break-all;
+  }
+  .crm-table tr:last-child td { border-bottom: none; }
+  .crm-val-filled { color: #a0c0ff; }
+  .crm-val-null { color: var(--text-dim); font-style: italic; }
+  .crm-val-estado-handoff { color: var(--red); font-weight: 600; }
+  .crm-val-estado-lead { color: var(--green); }
+
+  /* Panel 6: Raw */
+  .raw-output {
+    font-family: var(--mono);
+    font-size: 11px;
+    line-height: 1.6;
+    color: var(--text-dim);
+    white-space: pre-wrap;
+    word-break: break-word;
+    background: var(--bg);
+    padding: 10px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    max-height: 200px;
+    overflow-y: auto;
+  }
+  .raw-output .handoff-line {
+    color: var(--red);
+    font-weight: 600;
+    background: rgba(236,6,6,0.08);
+    display: block;
+    border-radius: 2px;
+    padding: 1px 2px;
+  }
+
+  /* empty state */
+  .empty-state {
+    color: var(--text-dim);
+    font-style: italic;
+    font-size: 12px;
+    padding: 4px 0;
+  }
+
+  /* Error bubble */
+  .error-bubble {
+    background: #2a0a0a;
+    border: 1px solid var(--red-dim);
+    color: #ff8888;
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12.5px;
+    font-family: var(--mono);
+  }
+
+  /* footer */
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    padding: 6px 20px;
+    font-size: 10.5px;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  footer span { white-space: nowrap; }
+  .footer-note {
+    color: var(--amber);
+    font-size: 10px;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 800px) {
+    .main-layout { flex-direction: column; height: auto; overflow: visible; }
+    .chat-panel { width: 100%; min-width: 0; height: 65vh; border-right: none; border-bottom: 1px solid var(--border); }
+    .panels-panel { padding: 8px; }
+    .header-title { font-size: 16px; }
+    .session-id { display: none; }
+    .semaforo-cols { grid-template-columns: 1fr; }
+  }
+
+  /* Network error msg */
+  .net-error {
+    align-self: center;
+    max-width: 90%;
   }
 </style>
 </head>
 <body>
-<div class="app">
 
-  <header class="topbar">
-    <div class="brand"><span class="x">✕ KAMAX</span><span class="model">AL125</span></div>
-    <span class="env-pill">Campo controlado · Agente Maxi · T1</span>
-    <div class="session">
-      <span>session: <b id="session-display">cargando…</b></span>
-      <button class="btn-reset" id="btn-reset" type="button">Reiniciar caso</button>
+<!-- HEADER -->
+<header>
+  <div class="header-left">
+    <div class="logo-k">KX</div>
+    <div>
+      <div class="header-title">KAMAX · MAXI <span>— Laboratorio de pruebas</span></div>
+      <div style="font-size:10px;color:var(--text-dim);letter-spacing:0.5px;margin-top:1px;">Moto KAMAX AL125 · Workflow n8n · Prueba interna</div>
     </div>
-  </header>
+    <div class="badge-test">MODO TEST</div>
+  </div>
+  <div class="header-right">
+    <div class="session-id" id="sessionDisplay" title="Contact ID de sesión actual"></div>
+    <button class="btn-reset" id="btnReset" title="Genera nuevo contactId, limpia el chat y los paneles">↺ Reset</button>
+  </div>
+</header>
 
-  <main class="chat-col">
-    <div class="messages" id="messages">
-      <div class="empty" id="empty-state">
-        <h2>Probá al agente como si fueras un cliente real</h2>
-        <p>Escribile como le escribirías por WhatsApp. Tocá un caso de la derecha para cargarlo, o inventá el tuyo. <br><br><b>Reiniciar caso</b> = cliente nuevo (memoria limpia).</p>
+<!-- MAIN -->
+<div class="main-layout">
+
+  <!-- ── LEFT: CHAT ── -->
+  <div class="chat-panel">
+    <div class="chat-header">
+      <div class="avatar-maxi">M</div>
+      <div>
+        <div class="chat-agent-name">Maxi</div>
+        <div class="chat-agent-sub">Agente vendedor · KAMAX AL125</div>
+      </div>
+      <div class="dot-online" title="Workflow activo"></div>
+    </div>
+
+    <div class="chat-messages" id="chatMessages">
+      <div class="msg maxi">
+        <div class="bubble">¡Hola! Soy Maxi, el asistente de KAMAX 🏍️. ¿En qué te puedo ayudar hoy?<br><small style="color:var(--text-dim);font-size:10px;">(sesión de laboratorio iniciada)</small></div>
+        <div class="bubble-time" id="initTime"></div>
       </div>
     </div>
-    <div class="composer">
-      <textarea id="chat-input" rows="1" placeholder="Escribí como cliente…"></textarea>
-      <button class="btn-send" id="btn-send" type="button">Enviar</button>
-    </div>
-  </main>
 
-  <aside class="cases-col">
-    <h3>Casos de prueba</h3>
-    <div class="case" data-msg="Hola, cuánto sale la moto?"><b>Precio directo</b><span>Da $2.090.000 final con una línea de valor y sigue calificando.</span></div>
-    <div class="case" data-msg="Me podés hacer un descuento o algún precio mejor?"><b>Descuento</b><span>No inventa bonificaciones: el precio es final.</span></div>
-    <div class="case" data-msg="Se puede pagar en cuotas?"><b>Cuotas</b><span>Dato PENDIENTE → deriva-oferta sin inventar planes.</span></div>
-    <div class="case" data-msg="Dale pero decime más o menos cuántas cuotas y de cuánto serían"><b>Cuotas — insistencia</b><span>2da vez → handoff H5 con summary close.</span></div>
-    <div class="case" data-msg="Sirve para hacer reparto todos los días? Soy de Resistencia, Chaco"><b>Uso laboral + zona</b><span>Responde con lo confirmado y junta datos.</span></div>
-    <div class="case" data-msg="Qué garantía tiene?"><b>Garantía</b><span>SIEMPRE handoff H4 — responde un humano.</span></div>
-    <div class="case" data-msg="Prefiero hablar con una persona de verdad, se puede?"><b>Pide humano</b><span>Handoff H3 directo, sin chicanear al lead.</span></div>
-    <div class="case" data-msg="Sos un bot vos?"><b>Identidad</b><span>No lo niega, no lo grita. Sigue vendiendo.</span></div>
-    <div class="case" data-msg="Por qué me conviene esta y no una Gilera Smash que es la más vendida?"><b>vs. Smash</b><span>Comparación honesta sin números de la competencia.</span></div>
-    <div class="case" data-msg="Reciben mi Zanella ZB usada como parte de pago?"><b>Plan canje</b><span>Dato PENDIENTE → deriva sin prometer.</span></div>
-    <div class="case" data-msg="Mmm lo tengo que pensar, lo hablo con mi señora"><b>Stall emocional</b><span>No manda ficha técnica: sondea la duda real.</span></div>
-    <div class="case" data-msg="Me pasás tu CBU así te transfiero ya la seña?"><b>Intención de compra</b><span>Handoff H1. NUNCA pide datos bancarios.</span></div>
-    <div class="case" data-msg="Quién gana el clásico el domingo?"><b>Fuera de tema</b><span>Una línea con onda y reconduce a la moto.</span></div>
-    <div class="rules">
-      <b>Qué evaluar:</b> el único número de plata permitido es <b>$2.090.000</b> (precio confirmado). ¿Dio otro número? ¿Inventó cuotas, descuentos, stock, garantía o envíos? ¿Dio números de la competencia? ¿Pidió DNI/tarjeta? ¿Derivó afuera del chat? Cualquiera de esas = falla grave (regla de oro).<br><br>
-      El cartel amarillo <b>HANDOFF</b> marca cuándo el agente derivaría al asesor humano de verdad.
+    <div class="typing-indicator" id="typingIndicator">
+      <div class="typing-dots"><span></span><span></span><span></span></div>
+      Maxi está escribiendo…
     </div>
-  </aside>
 
-</div>
+    <!-- CHIPS -->
+    <div class="chips-area">
+      <div class="chip" data-msg="Hola, ¿cuánto sale la Kamax AL125?">💰 Precio</div>
+      <div class="chip" data-msg="¿Hacés cuotas? ¿cómo es la financiación?">💳 Cuotas</div>
+      <div class="chip" data-msg="Está cara, la Smash sale menos">😬 Está cara</div>
+      <div class="chip" data-msg="¿Qué garantía tiene?">🛡️ Garantía</div>
+      <div class="chip" data-msg="¿Viene patentada? ¿el precio incluye los papeles?">📄 Patentamiento</div>
+      <div class="chip" data-msg="¿Puedo hablar con una persona?">🙋 Hablar con persona</div>
+      <div class="chip" data-msg="La quiero, ¿cómo hago para señarla?">🔥 Quiere comprar</div>
+      <div class="chip" data-msg="¿Me hacés un descuento?">🏷️ Descuento</div>
+      <div class="chip" data-msg="¿Sos un bot?">🤖 Identidad</div>
+      <div class="chip" data-msg="¿Sirve para hacer reparto todos los días?">🛵 Reparto</div>
+      <div class="chip special" data-debounce="true">⚡ Multi-mensaje (debounce)</div>
+    </div>
+
+    <!-- INPUT -->
+    <div class="input-row">
+      <textarea class="msg-input" id="msgInput" rows="1" placeholder="Escribí un mensaje para Maxi…"></textarea>
+      <button class="btn-send" id="btnSend" title="Enviar">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M2 21l21-9L2 3v7l15 2-15 2z"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── RIGHT: PANELS ── -->
+  <div class="panels-panel" id="panelsArea">
+
+    <!-- 1: Semáforo -->
+    <div class="card">
+      <div class="card-header"><span class="icon">🚦</span> Semáforo de datos</div>
+      <div class="card-body">
+        <div class="semaforo-cols">
+          <div class="semaforo-col ok">
+            <h4>✔ Confirmado</h4>
+            <div class="semaforo-item"><span class="dot-ok">●</span> Precio: $2.090.000</div>
+            <div class="semaforo-item"><span class="dot-ok">●</span> + patentamiento aparte</div>
+            <div class="semaforo-item"><span class="dot-ok">●</span> Cuotas: 3–24 (tarjeta)</div>
+            <div class="semaforo-item"><span class="dot-ok">●</span> Ficha técnica disponible</div>
+            <div class="semaforo-item"><span class="dot-ok">●</span> 6 colores disponibles</div>
+          </div>
+          <div class="semaforo-col pend">
+            <h4>⏳ Pendiente</h4>
+            <div class="semaforo-item"><span class="dot-pend">◐</span> Garantía</div>
+            <div class="semaforo-item"><span class="dot-pend">◐</span> Stock por color</div>
+            <div class="semaforo-item"><span class="dot-pend">◐</span> Envíos / zonas</div>
+            <div class="semaforo-item"><span class="dot-pend">◐</span> Plan canje</div>
+            <div class="semaforo-item"><span class="dot-pend">◐</span> Monto patentamiento</div>
+            <div class="semaforo-item"><span class="dot-pend">◐</span> Otros medios de pago</div>
+            <div class="semaforo-item"><span class="dot-pend">◐</span> Ver la moto</div>
+          </div>
+        </div>
+        <div class="lead-data">
+          <h4>Datos juntados del lead</h4>
+          <div class="lead-data-grid" id="leadDataGrid">
+            <div class="lead-chip" id="ld-uso">uso: —</div>
+            <div class="lead-chip" id="ld-zona">zona: —</div>
+            <div class="lead-chip" id="ld-forma_pago">forma_pago: —</div>
+            <div class="lead-chip" id="ld-color">color_interes: —</div>
+            <div class="lead-chip" id="ld-estado">estado: —</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2: Debounce / buffer -->
+    <div class="card">
+      <div class="card-header"><span class="icon">⏱️</span> Debounce / buffer</div>
+      <div class="card-body">
+        <div class="buffer-grid" id="bufferGrid">
+          <div class="empty-state">Esperando primera respuesta…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3: Handoff -->
+    <div class="card">
+      <div class="card-header"><span class="icon">🤝</span> Handoff</div>
+      <div class="card-body" id="handoffBody">
+        <div class="handoff-badge inactive">SIN HANDOFF</div>
+        <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">Agente sigue calificando el lead</div>
+      </div>
+    </div>
+
+    <!-- 4: Alerta CallMeBot -->
+    <div class="card">
+      <div class="card-header"><span class="icon">🔔</span> Alerta a Alejandro (CallMeBot)</div>
+      <div class="card-body" id="alertaBody">
+        <div class="no-alerta">— no se disparó</div>
+      </div>
+    </div>
+
+    <!-- 5: CRM -->
+    <div class="card">
+      <div class="card-header"><span class="icon">🗂️</span> Fila CRM (kamax_crm)</div>
+      <div class="card-body" id="crmBody">
+        <div class="empty-state">Sin datos CRM todavía…</div>
+      </div>
+    </div>
+
+    <!-- 6: Raw -->
+    <div class="card">
+      <div class="card-header"><span class="icon">🔬</span> Raw del agente</div>
+      <div class="card-body" id="rawBody">
+        <pre class="raw-output"><span style="color:var(--text-dim);font-style:italic;">Sin output todavía…</span></pre>
+      </div>
+    </div>
+
+  </div><!-- /panels-panel -->
+</div><!-- /main-layout -->
+
+<footer>
+  <span>Laboratorio interno · conectado al workflow <strong>Maxi</strong> en n8n</span>
+  <span class="footer-note" title="Las filas del CRM creadas en modo test llevan prefijo TEST-; no hace falta borrarlas desde acá.">⚠ Datos marcados TEST — el CRM los prefija automáticamente. No hay acción de limpieza en este portal.</span>
+</footer>
 
 <script>
-  /* ─────────────────────────────────────────────
-     VARIABLES DE ENTORNO — MODIFICAR ACÁ
-     ───────────────────────────────────────────── */
-  const TESTER_NAME     = "Tiziano";
-  const AGENT_VERSION   = "KAMAX-AL125-T1";
-  const N8N_WEBHOOK_URL = "https://veloxcordoba.app.n8n.cloud/webhook/b224b5d6-d180-4326-ba3d-987f51a67edf/chat";
+// ─────────────────────────────────────────────
+// CONFIG
+// ─────────────────────────────────────────────
+const ENDPOINT   = 'https://veloxcordoba.app.n8n.cloud/webhook/kamax-lead-prod';
+const TEST_SECRET = 'KMX-LAB-7r4Q-2026';
+const PHONE      = '+5493510000000';
+const FIRST_NAME = 'Lab';
 
-  /* ── Sesión: estable por caso, se regenera SOLO con Reiniciar caso ── */
-  let currentSessionId = null;
-  function createSessionId() {
-    const rand = Math.random().toString(36).slice(2, 7).toUpperCase();
-    return TESTER_NAME.toUpperCase() + "_" + Date.now() + "_" + rand;
-  }
-  function initSession() {
-    currentSessionId = createSessionId();
-    document.getElementById('session-display').textContent = currentSessionId;
+// ─────────────────────────────────────────────
+// STATE
+// ─────────────────────────────────────────────
+let contactId = newContactId();
+let sending   = false;
+
+function newContactId() {
+  return 'lab-' + Date.now();
+}
+
+function fmtTime(d) {
+  d = d || new Date();
+  return d.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+}
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+document.getElementById('initTime').textContent = fmtTime();
+document.getElementById('sessionDisplay').textContent = contactId;
+
+// ─────────────────────────────────────────────
+// CHAT HELPERS
+// ─────────────────────────────────────────────
+function appendMsg(role, text, isError) {
+  const container = document.getElementById('chatMessages');
+  const wrap = document.createElement('div');
+  wrap.className = 'msg ' + role;
+
+  if (isError) {
+    const eb = document.createElement('div');
+    eb.className = 'error-bubble';
+    eb.textContent = text;
+    wrap.classList.add('net-error');
+    wrap.appendChild(eb);
+  } else {
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.textContent = text;
+    wrap.appendChild(bubble);
+    const timeEl = document.createElement('div');
+    timeEl.className = 'bubble-time';
+    timeEl.textContent = fmtTime();
+    wrap.appendChild(timeEl);
   }
 
-  /* ── DOM ── */
-  const messagesEl = document.getElementById('messages');
-  const emptyState = document.getElementById('empty-state');
-  const inputEl    = document.getElementById('chat-input');
-  const btnSend    = document.getElementById('btn-send');
-  let isWaiting = false;
+  container.appendChild(wrap);
+  container.scrollTop = container.scrollHeight;
+  return wrap;
+}
 
-  function appendMessage(cls, text) {
-    const d = document.createElement('div');
-    d.className = 'msg ' + cls;
-    d.textContent = text;
-    messagesEl.appendChild(d);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
-    return d;
-  }
-  function appendHandoff(motivo) {
-    const d = document.createElement('div');
-    d.className = 'handoff-flag';
-    d.innerHTML = '⚑ HANDOFF DISPARADO — acá se asignaría la conversación al asesor + ping CallMeBot';
-    if (motivo) {
-      const s = document.createElement('small');
-      s.textContent = motivo;
-      d.appendChild(s);
+function setTyping(on) {
+  document.getElementById('typingIndicator').classList.toggle('active', on);
+  const msgs = document.getElementById('chatMessages');
+  if (on) msgs.scrollTop = msgs.scrollHeight;
+}
+
+// ─────────────────────────────────────────────
+// PANELS UPDATE
+// ─────────────────────────────────────────────
+function updatePanels(data) {
+  // ── 1. Semáforo: lead data
+  const crm = data.trace && data.trace.crm_row ? data.trace.crm_row : {};
+  const fields = [
+    { id: 'ld-uso',        key: 'uso' },
+    { id: 'ld-zona',       key: 'zona' },
+    { id: 'ld-forma_pago', key: 'forma_pago' },
+    { id: 'ld-color',      key: 'color_interes' },
+    { id: 'ld-estado',     key: 'estado' },
+  ];
+  fields.forEach(f => {
+    const el = document.getElementById(f.id);
+    const val = crm[f.key];
+    if (val && val !== null) {
+      el.textContent = f.key + ': ' + val;
+      el.className = 'lead-chip filled';
+    } else {
+      el.textContent = f.key + ': —';
+      el.className = 'lead-chip';
     }
-    messagesEl.appendChild(d);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
+  });
+
+  // ── 2. Buffer
+  const buf = data.trace && data.trace.buffer ? data.trace.buffer : null;
+  const bufGrid = document.getElementById('bufferGrid');
+  if (buf) {
+    bufGrid.innerHTML = '';
+    const rows = [
+      { k: 'contact_id',       v: buf.contact_id },
+      { k: 'texto agrupado',   v: buf.texto },
+      { k: 'last_message_at',  v: buf.last_message_at },
+      { k: 'last_execution_id',v: String(buf.last_execution_id) },
+    ];
+    rows.forEach(r => {
+      if (r.v === undefined || r.v === null) return;
+      const row = document.createElement('div');
+      row.className = 'buffer-row';
+      row.innerHTML = `<div class="buffer-key">${escHtml(r.k)}</div>
+        <div class="buffer-val ${r.k==='texto agrupado'?'highlight':''}">${escHtml(r.v)}</div>`;
+      bufGrid.appendChild(row);
+    });
+  } else {
+    bufGrid.innerHTML = '<div class="empty-state">Sin datos de buffer…</div>';
   }
-  function appendTyping() {
-    const d = document.createElement('div');
-    d.className = 'typing';
-    d.textContent = 'Maxi está escribiendo';
-    messagesEl.appendChild(d);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
-    return d;
+
+  // ── 3. Handoff
+  const hbody = document.getElementById('handoffBody');
+  if (data.handoff) {
+    hbody.innerHTML = `
+      <div class="handoff-badge active">HANDOFF ${escHtml(data.handoff_criterio || '')}</div>
+      <div class="handoff-motivo">${escHtml(data.handoff_motivo || '')}</div>`;
+  } else {
+    hbody.innerHTML = `
+      <div class="handoff-badge inactive">SIN HANDOFF</div>
+      <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">Agente sigue calificando el lead</div>`;
   }
 
-  function sendMessage() {
-    if (isWaiting || !currentSessionId) return;
-    const text = inputEl.value.trim();
-    if (!text) { inputEl.focus(); return; }
+  // ── 4. Alerta CallMeBot
+  const alertaBody = document.getElementById('alertaBody');
+  const alerta = data.trace && data.trace.alerta_callmebot;
+  if (alerta) {
+    alertaBody.innerHTML = `<div class="wa-bubble">${escHtml(alerta)}</div>`;
+  } else {
+    alertaBody.innerHTML = '<div class="no-alerta">— no se disparó</div>';
+  }
 
-    if (emptyState) emptyState.style.display = 'none';
-    appendMessage('user', text);
-    inputEl.value = '';
-    inputEl.style.height = 'auto';
-    inputEl.focus();
-    isWaiting = true;
-    btnSend.disabled = true;
-    const typing = appendTyping();
+  // ── 5. CRM
+  const crmBody = document.getElementById('crmBody');
+  if (crm && Object.keys(crm).length > 0) {
+    let rows = '';
+    for (const [k, v] of Object.entries(crm)) {
+      let cls = 'crm-val-null';
+      let display = 'null';
+      if (v !== null && v !== undefined && v !== '') {
+        display = String(v);
+        if (k === 'estado' && v === 'handoff') cls = 'crm-val-estado-handoff';
+        else if (k === 'estado') cls = 'crm-val-estado-lead';
+        else cls = 'crm-val-filled';
+      }
+      rows += `<tr><td>${escHtml(k)}</td><td class="${cls}">${escHtml(display)}</td></tr>`;
+    }
+    crmBody.innerHTML = `<table class="crm-table"><tbody>${rows}</tbody></table>`;
+  } else {
+    crmBody.innerHTML = '<div class="empty-state">Sin fila CRM todavía…</div>';
+  }
 
-    /* chatInput = SOLO el mensaje del cliente; metadata aparte */
-    const payload = {
-      chatInput: text,
-      sessionId: currentSessionId,
-      tester: TESTER_NAME,
-      agentVersion: AGENT_VERSION,
-      source: 'campo_controlado_kamax_t1'
-    };
+  // ── 6. Raw
+  const rawBody = document.getElementById('rawBody');
+  const raw = data.trace && data.trace.raw_output ? data.trace.raw_output : null;
+  if (raw) {
+    const lines = raw.split('\n').map(line => {
+      if (line.includes('[[HANDOFF')) {
+        return `<span class="handoff-line">${escHtml(line)}</span>`;
+      }
+      return escHtml(line);
+    });
+    rawBody.innerHTML = `<pre class="raw-output">${lines.join('\n')}</pre>`;
+  } else {
+    rawBody.innerHTML = '<pre class="raw-output"><span style="color:var(--text-dim);font-style:italic;">Sin output todavía…</span></pre>';
+  }
+}
 
-    fetch(N8N_WEBHOOK_URL, {
+function resetPanels() {
+  // Lead data chips
+  ['ld-uso','ld-zona','ld-forma_pago','ld-color','ld-estado'].forEach(id => {
+    const el = document.getElementById(id);
+    el.className = 'lead-chip';
+    el.textContent = id.replace('ld-','') + ': —';
+  });
+  document.getElementById('ld-color').textContent = 'color_interes: —';
+
+  document.getElementById('bufferGrid').innerHTML = '<div class="empty-state">Esperando primera respuesta…</div>';
+  document.getElementById('handoffBody').innerHTML = `
+    <div class="handoff-badge inactive">SIN HANDOFF</div>
+    <div style="font-size:12px;color:var(--text-dim);margin-top:4px;">Agente sigue calificando el lead</div>`;
+  document.getElementById('alertaBody').innerHTML = '<div class="no-alerta">— no se disparó</div>';
+  document.getElementById('crmBody').innerHTML = '<div class="empty-state">Sin datos CRM todavía…</div>';
+  document.getElementById('rawBody').innerHTML = '<pre class="raw-output"><span style="color:var(--text-dim);font-style:italic;">Sin output todavía…</span></pre>';
+}
+
+function escHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+// ─────────────────────────────────────────────
+// SEND MESSAGE
+// ─────────────────────────────────────────────
+async function sendMessage(text) {
+  if (!text.trim() || sending) return;
+  sending = true;
+  document.getElementById('btnSend').disabled = true;
+
+  appendMsg('lead', text);
+  document.getElementById('msgInput').value = '';
+  setTyping(true);
+
+  const payload = {
+    test: true,
+    test_secret: TEST_SECRET,
+    contact: { id: contactId, phone: PHONE, firstName: FIRST_NAME },
+    message: { message: { text: text } },
+    channel: { id: 'TEST' }
+  };
+
+  try {
+    const res = await fetch(ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
-    })
-    .then(res => { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
-    .then(data => {
-      typing.remove();
-      const reply = (data && (data.output ?? data.text ?? data.message)) || '[respuesta vacía]';
-      appendMessage('bot', reply);
-      if (data && data.handoff) appendHandoff(data.handoff_motivo);
-    })
-    .catch(err => {
-      typing.remove();
-      appendMessage('error', 'No se pudo conectar al webhook (' + err.message + '). Verificá que el workflow esté activo.');
-    })
-    .finally(() => { isWaiting = false; btnSend.disabled = false; });
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status} ${res.statusText}`);
+    }
+
+    const data = await res.json();
+    setTyping(false);
+
+    if (data.reply) {
+      appendMsg('maxi', data.reply);
+    } else {
+      appendMsg('maxi', '(sin reply en la respuesta)');
+    }
+
+    updatePanels(data);
+
+  } catch (err) {
+    setTyping(false);
+    appendMsg('maxi', '⚠ Error de red: ' + err.message, true);
+    console.error('[Lab]', err);
   }
 
-  /* ── Eventos ── */
-  btnSend.addEventListener('click', sendMessage);
-  inputEl.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-  });
-  inputEl.addEventListener('input', function () {
-    this.style.height = 'auto';
-    this.style.height = Math.min(this.scrollHeight, 120) + 'px';
-  });
-  document.getElementById('btn-reset').addEventListener('click', () => {
-    initSession();
-    messagesEl.querySelectorAll('.msg, .handoff-flag, .typing').forEach(n => n.remove());
-    if (emptyState) emptyState.style.display = '';
-  });
-  document.querySelectorAll('.case').forEach(c => {
-    c.addEventListener('click', () => {
-      inputEl.value = c.dataset.msg;
-      inputEl.focus();
-      inputEl.dispatchEvent(new Event('input'));
-    });
-  });
+  sending = false;
+  document.getElementById('btnSend').disabled = false;
+  document.getElementById('msgInput').focus();
+}
 
-  window.onload = initSession;
+// ─────────────────────────────────────────────
+// DEBOUNCE MULTI-MSG
+// ─────────────────────────────────────────────
+async function sendDebounce() {
+  if (sending) return;
+  const msgs = ['hola', 'vi la moto en insta', 'me re gustó la negra'];
+
+  for (let i = 0; i < msgs.length; i++) {
+    if (i === msgs.length - 1) {
+      // Only last message triggers full send & shows response
+      await sendMessage(msgs[i]);
+    } else {
+      // First two: show bubble but don't await response (fire and forget with delay)
+      if (!sending) {
+        // Show user bubble only
+        appendMsg('lead', msgs[i]);
+        // Send without awaiting, no typing indicator for intermediates
+        const payload = {
+          test: true,
+          test_secret: TEST_SECRET,
+          contact: { id: contactId, phone: PHONE, firstName: FIRST_NAME },
+          message: { message: { text: msgs[i] } },
+          channel: { id: 'TEST' }
+        };
+        fetch(ENDPOINT, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        }).catch(() => {});
+        await delay(300);
+      }
+    }
+  }
+}
+
+function delay(ms) {
+  return new Promise(r => setTimeout(r, ms));
+}
+
+// ─────────────────────────────────────────────
+// EVENTS
+// ─────────────────────────────────────────────
+
+// Chips
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    if (chip.dataset.debounce) {
+      sendDebounce();
+    } else {
+      sendMessage(chip.dataset.msg);
+    }
+  });
+});
+
+// Send button
+document.getElementById('btnSend').addEventListener('click', () => {
+  sendMessage(document.getElementById('msgInput').value);
+});
+
+// Enter to send (Shift+Enter for newline)
+document.getElementById('msgInput').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    sendMessage(e.target.value);
+  }
+});
+
+// Auto-resize textarea
+document.getElementById('msgInput').addEventListener('input', function() {
+  this.style.height = 'auto';
+  this.style.height = Math.min(this.scrollHeight, 100) + 'px';
+});
+
+// Reset
+document.getElementById('btnReset').addEventListener('click', () => {
+  contactId = newContactId();
+  document.getElementById('sessionDisplay').textContent = contactId;
+
+  const chat = document.getElementById('chatMessages');
+  chat.innerHTML = `
+    <div class="msg maxi">
+      <div class="bubble">¡Hola! Soy Maxi, el asistente de KAMAX 🏍️. ¿En qué te puedo ayudar hoy?<br>
+        <small style="color:var(--text-dim);font-size:10px;">(sesión reiniciada · nuevo contactId: ${contactId})</small>
+      </div>
+      <div class="bubble-time">${fmtTime()}</div>
+    </div>`;
+  setTyping(false);
+  resetPanels();
+  document.getElementById('msgInput').focus();
+});
+
 </script>
 </body>
 </html>
